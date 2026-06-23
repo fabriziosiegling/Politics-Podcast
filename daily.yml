@@ -1,0 +1,45 @@
+name: Daily Podcast
+
+on:
+  schedule:
+    # GitHub-Cron läuft in UTC. 02:30 UTC =
+    #   Sommer (CEST, UTC+2): 04:30 Uhr  |  Winter (CET, UTC+1): 03:30 Uhr
+    # -> in beiden Fällen fertig deutlich vor 6:00, mit Puffer fürs Herunterladen.
+    - cron: "30 2 * * *"
+  workflow_dispatch:   # erlaubt manuelles Auslösen per Knopf in GitHub
+
+permissions:
+  contents: write       # nötig, damit der Workflow die erzeugten Dateien zurück committen darf
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: ffmpeg installieren (für die Audio-Verkettung)
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Abhängigkeiten installieren
+        run: pip install -r requirements.txt
+
+      - name: Episoden erzeugen
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+        run: python main.py
+
+      - name: Ergebnisse committen
+        run: |
+          git config user.name "podcast-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add public
+          git commit -m "Episoden $(date -u +%Y-%m-%d)" || echo "nichts zu committen"
+          git push
