@@ -50,6 +50,9 @@ PODCAST_DESCRIPTION = (
     "und Weltpolitik. Automatisch generiert."
 )
 PODCAST_AUTHOR = "Morning Podcast Bot"
+# WICHTIG für Spotify: Hier deine echte E-Mail eintragen. Spotify prüft darüber
+# die Inhaberschaft des Feeds. Diese Adresse wird im Feed öffentlich sichtbar.
+PODCAST_EMAIL = "ibaf005@gmail.com"
 PODCAST_LANGUAGE = "en"  # Sprache der gesprochenen Folgen (Skript wird auf Englisch erzeugt)
 
 # Wie viele Tage an Episoden im Feed behalten werden (ältere werden gelöscht).

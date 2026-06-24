@@ -36,6 +36,7 @@ PUBLIC_DIR = "public"
 EPISODES_DIR = os.path.join(PUBLIC_DIR, "episodes")
 MANIFEST_PATH = os.path.join(PUBLIC_DIR, "episodes.json")
 FEED_PATH = os.path.join(PUBLIC_DIR, "feed.xml")
+COVER_PATH = os.path.join(PUBLIC_DIR, "cover.png")
 
 # --- Umgebung --------------------------------------------------------------
 ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
@@ -218,16 +219,62 @@ def prune_old(manifest):
     return kept
 
 
+def ensure_cover(path):
+    """Erzeugt einmalig ein einfaches Cover-Bild (1500x1500 PNG), falls keins
+    existiert. Spotify verlangt ein quadratisches Cover (1400–3000 px)."""
+    if os.path.exists(path):
+        return
+    from PIL import Image, ImageDraw, ImageFont
+    import textwrap
+
+    size = 1500
+    img = Image.new("RGB", (size, size), (18, 24, 38))   # dunkles Marineblau
+    draw = ImageDraw.Draw(img)
+    draw.rectangle([0, size - 200, size, size], fill=(196, 60, 60))  # Akzentbalken
+
+    def load_font(pt, bold=False):
+        name = "DejaVuSans-Bold.ttf" if bold else "DejaVuSans.ttf"
+        for p in (f"/usr/share/fonts/truetype/dejavu/{name}", name):
+            try:
+                return ImageFont.truetype(p, pt)
+            except OSError:
+                continue
+        return ImageFont.load_default()
+
+    font_big = load_font(150, bold=True)
+    font_small = load_font(64)
+
+    # Titel mittig, bei Bedarf umgebrochen
+    lines = textwrap.wrap(config.PODCAST_TITLE, width=12) or [config.PODCAST_TITLE]
+    line_h = font_big.getbbox("Ag")[3] + 24
+    total_h = line_h * len(lines)
+    y = (size - 200 - total_h) // 2
+    for line in lines:
+        w = draw.textlength(line, font=font_big)
+        draw.text(((size - w) // 2, y), line, font=font_big, fill=(245, 247, 250))
+        y += line_h
+
+    sub = "Täglich · Politik & Welt"
+    w = draw.textlength(sub, font=font_small)
+    draw.text(((size - w) // 2, size - 150), sub, font=font_small, fill=(255, 255, 255))
+
+    img.save(path, "PNG")
+
+
 def build_feed(manifest):
     fg = FeedGenerator()
     fg.load_extension("podcast")
     fg.title(config.PODCAST_TITLE)
     fg.description(config.PODCAST_DESCRIPTION)
-    fg.author({"name": config.PODCAST_AUTHOR})
+    fg.author({"name": config.PODCAST_AUTHOR, "email": config.PODCAST_EMAIL})
     fg.link(href=PUBLIC_BASE_URL, rel="alternate")
     fg.language(config.PODCAST_LANGUAGE)
     fg.podcast.itunes_author(config.PODCAST_AUTHOR)
     fg.podcast.itunes_category("News")
+    fg.podcast.itunes_explicit("no")
+    # Spotify-Pflicht: Cover-Bild und Inhaber-E-Mail
+    fg.podcast.itunes_image(f"{PUBLIC_BASE_URL}/cover.png")
+    fg.podcast.itunes_owner(name=config.PODCAST_AUTHOR, email=config.PODCAST_EMAIL)
     # Feed-Selbstlink
     fg.link(href=f"{PUBLIC_BASE_URL}/feed.xml", rel="self")
 
@@ -240,6 +287,7 @@ def build_feed(manifest):
         fe.description(ep.get("description", ep["title"]))
         fe.enclosure(url, str(ep.get("length", 0)), "audio/mpeg")
         fe.pubDate(ep["pubdate"])
+        fe.podcast.itunes_explicit("no")
 
     fg.rss_file(FEED_PATH, pretty=True)
 
@@ -284,6 +332,7 @@ def main():
 
     manifest = prune_old(manifest)
     save_manifest(manifest)
+    ensure_cover(COVER_PATH)
     build_feed(manifest)
     print("Fertig. Feed geschrieben nach", FEED_PATH)
 
