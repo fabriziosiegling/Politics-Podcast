@@ -97,68 +97,169 @@ def _strip_html(text):
 
 
 # ===========================================================================
-# 2) ZUSAMMENFASSEN MIT CLAUDE
+# 2) MARKTDATEN (für die Finance-Folge)
 # ===========================================================================
-def build_prompt(episode_title, items, date_str):
-    lines = []
-    for it in items:
-        teaser = it["summary"][:400]
-        lines.append(f"- [SOURCE: {it['source']}] {it['title']}. {teaser}")
+def fetch_quotes(instruments):
+    """Holt aktuelle Kurse via Yahoo Finance (yfinance). Gibt je Instrument
+    {label, unit, ok, price, change_abs, change_pct} zurück. Schlägt eine Abfrage
+    fehl, wird ok=False gesetzt und das Instrument später NICHT erwähnt – so
+    erfindet das Modell niemals Zahlen."""
+    import yfinance as yf
+    out = []
+    for label, symbol, unit in instruments:
+        rec = {"label": label, "unit": unit, "ok": False}
+        try:
+            hist = yf.Ticker(symbol).history(period="5d")
+            closes = [c for c in hist["Close"].tolist() if c == c]  # NaN entfernen
+            if len(closes) >= 2:
+                price, prev = closes[-1], closes[-2]
+                rec.update(
+                    ok=True,
+                    price=round(price, 2),
+                    change_abs=round(price - prev, 2),
+                    change_pct=round((price - prev) / prev * 100, 2),
+                )
+        except Exception as e:  # yfinance kann zeitweise leer liefern
+            print(f"    Kurs fehlgeschlagen für {label} ({symbol}): {e}")
+        out.append(rec)
+    return out
+
+
+# ===========================================================================
+# 3) ZUSAMMENFASSEN MIT CLAUDE
+# ===========================================================================
+COVERED_MARKER = "===COVERED==="
+
+
+def _covered_block(already_covered):
+    if not already_covered:
+        return ""
+    joined = "\n".join(f"- {t}" for t in already_covered)
+    return (
+        "\nALREADY COVERED in earlier shows today — do NOT repeat these (a brief "
+        "cross-reference is fine, but no re-explaining):\n" + joined + "\n"
+    )
+
+
+def _common_rules():
+    return (
+        f"Write a spoken-word podcast script in {config.SCRIPT_LANGUAGE}, about "
+        f"{config.TARGET_WORDS} words (~5 minutes read aloud).\n\n"
+        "Editorial rules:\n"
+        "- Merge duplicates: if several sources report the SAME event, cover it ONCE.\n"
+        "- Lead with stories confirmed by at least TWO independent sources.\n"
+        "- Separate facts from opinion; attribute opinions (\"according to ...\").\n"
+        "- Where outlets frame an event differently, note it briefly; stay neutral.\n"
+        "- Invent nothing not supported below. If little happened, be shorter.\n"
+        "- Paraphrase; never copy sentences from the sources.\n"
+        "- Flowing spoken prose: no bullet points, no headings, no stage directions.\n"
+    )
+
+
+def build_news_prompt(ep, items, date_str, already_covered):
+    lines = [f"- [SOURCE: {it['source']}] {it['title']}. {it['summary'][:400]}" for it in items]
     sources_block = "\n".join(lines) if lines else "(no articles found today)"
+    return f"""You are the host of a daily news podcast: "{ep['title']}". Today is {date_str}.
 
-    return f"""You are the writer and host of a short daily news podcast episode titled "{episode_title}". Today is {date_str}.
+THIS SHOW IS STRICTLY ABOUT: {ep['scope']}
+DO NOT INCLUDE (off-topic or belongs to another show): {ep['exclude']}
+Read every item below and DROP anything that does not fit THIS show's topic, even though it appears in the feeds.
+{_covered_block(already_covered)}
+{_common_rules()}
+Structure: brief spoken intro with the date and topic; the stories in descending importance; a short sign-off.
 
-Below are news items collected from several independent outlets in the last day. Each line is tagged with its SOURCE. The sources span the political spectrum on purpose.
-
-Write a spoken-word podcast script in {config.SCRIPT_LANGUAGE}, about {config.TARGET_WORDS} words (roughly 5 minutes when read aloud).
-
-Strict editorial rules:
-- Lead with the stories that are reported by at least TWO independent sources — those are the confirmed, important ones.
-- Clearly separate facts from opinion/analysis. Attribute opinions ("according to ...").
-- Where outlets frame the same event differently, briefly note the difference instead of picking a side. Stay neutral.
-- Do NOT invent any fact that is not supported by the items below. If little happened, write a shorter episode rather than padding.
-- Paraphrase in your own words; do not copy sentences from the sources.
-
-Format:
-- A brief spoken intro with the date and episode topic.
-- The stories, in descending order of importance, in flowing spoken prose (no bullet points, no headings, no stage directions).
-- A short sign-off.
-- Output ONLY the script text that should be read aloud. No notes, no markdown.
+After the script, on a new line write exactly {COVERED_MARKER} followed by a short bullet list (3-8 words each) of the distinct stories you actually covered. This list is for de-duplication and will NOT be read aloud.
 
 News items:
 {sources_block}
 """
 
 
-def write_script(episode_title, items, date_str):
-    prompt = build_prompt(episode_title, items, date_str)
+def build_finance_prompt(ep, quotes, macro_items, date_str, already_covered):
+    qlines = []
+    for q in quotes:
+        if not q.get("ok"):
+            continue
+        if q["unit"] == "yield":
+            qlines.append(f"- {q['label']}: {q['price']}% ({q['change_abs']:+} pts vs previous close)")
+        else:
+            suffix = f" {q['unit']}" if q["unit"] else ""
+            qlines.append(f"- {q['label']}: {q['price']}{suffix} ({q['change_pct']:+}% vs previous close)")
+    data_block = "\n".join(qlines) if qlines else "(market data unavailable today)"
+    macro_lines = [f"- [SOURCE: {it['source']}] {it['title']}. {it['summary'][:400]}" for it in macro_items]
+    macro_block = "\n".join(macro_lines) if macro_lines else "(no macro news found today)"
+    return f"""You are the host of a daily finance & markets podcast: "{ep['title']}". Today is {date_str}.
+{_covered_block(already_covered)}
+{_common_rules()}
+PART 1 — Markets. Using ONLY the DATA block below, give the current level and ONE sentence on the move for each instrument present. If an instrument is missing from the data, simply skip it — NEVER invent a number. Group naturally: equity indices first, then commodities & crypto, then government bond yields.
+
+PART 2 — Macro. Explain the day's genuinely important macroeconomic developments (central banks, interest rates, inflation, jobs, growth, major economic policy) drawn from the macro news below. Skip minor single-company or stock-tip stories. Keep it understandable for a non-expert.
+
+The DATA is ALWAYS reportable (the "already covered" rule applies only to the macro narrative, not to the market levels).
+Structure: brief spoken intro with the date; Part 1; Part 2; short sign-off.
+
+After the script, on a new line write exactly {COVERED_MARKER} followed by a short bullet list (3-8 words each) of the MACRO stories you covered (not the market levels). It will NOT be read aloud.
+
+DATA (live market levels):
+{data_block}
+
+Macro news:
+{macro_block}
+"""
+
+
+def write_script(prompt):
     msg = anthropic_client.messages.create(
         model=config.CLAUDE_MODEL,
         max_tokens=2000,
         messages=[{"role": "user", "content": prompt}],
     )
-    # Antwort kann aus mehreren Textblöcken bestehen
     parts = [b.text for b in msg.content if getattr(b, "type", None) == "text"]
     return "\n".join(parts).strip()
+
+
+def split_script_and_covered(text):
+    """Trennt das vorzulesende Skript vom internen COVERED-Block."""
+    if COVERED_MARKER in text:
+        spoken, _, rest = text.partition(COVERED_MARKER)
+        covered = [
+            ln.lstrip("-*\u2022 ").strip()
+            for ln in rest.splitlines()
+            if ln.strip() and ln.lstrip()[:1] in "-*\u2022"
+        ]
+        return spoken.strip(), covered
+    return text.strip(), []
 
 
 # ===========================================================================
 # 3) VERTONEN MIT OPENAI-TTS
 # ===========================================================================
 def synthesize(script_text, out_path):
-    """OpenAI-TTS hat ein Limit von ~4096 Zeichen pro Anfrage. Wir teilen das
-    Skript in Stücke an Satzgrenzen, vertonen jedes Stück und fügen die MP3s
-    sauber zusammen."""
-    chunks = _split_text(script_text, max_chars=3500)
+    """OpenAI-TTS hat ein Eingabelimit pro Anfrage. Wir teilen das Skript an
+    Satzgrenzen, vertonen jedes Stück und fügen die MP3s sauber zusammen.
+    Das steuerbare Modell gpt-4o-mini-tts erlaubt eine Stil-Anweisung; die
+    einfacheren Modelle tts-1/tts-1-hd erlauben dafür einen Tempo-Wert."""
+    steerable = config.TTS_MODEL.startswith("gpt-4o")
+    # gpt-4o-mini-tts hat ein kleineres Limit (~2000 Zeichen) als tts-1 (4096)
+    max_chars = 1800 if steerable else 3500
+    chunks = _split_text(script_text, max_chars=max_chars)
     segments = []
     tmp_files = []
     for i, chunk in enumerate(chunks):
         tmp = out_path + f".part{i}.mp3"
-        with openai_client.audio.speech.with_streaming_response.create(
-            model=config.TTS_MODEL,
-            voice=config.TTS_VOICE,
-            input=chunk,
-        ) as response:
+        kwargs = {
+            "model": config.TTS_MODEL,
+            "voice": config.TTS_VOICE,
+            "input": chunk,
+        }
+        if steerable:
+            # Ton, Stimmung und Tempo per Anweisung
+            if getattr(config, "TTS_INSTRUCTIONS", ""):
+                kwargs["instructions"] = config.TTS_INSTRUCTIONS
+        else:
+            # Tempo per Parameter (nur tts-1 / tts-1-hd zuverlässig)
+            kwargs["speed"] = getattr(config, "TTS_SPEED", 1.0)
+        with openai_client.audio.speech.with_streaming_response.create(**kwargs) as response:
             response.stream_to_file(tmp)
         tmp_files.append(tmp)
         segments.append(AudioSegment.from_mp3(tmp))
@@ -302,17 +403,33 @@ def main():
     day_tag = now.strftime("%Y-%m-%d")
 
     manifest = load_manifest()
+    already_covered = []   # für Entdopplung über die Folgen hinweg
 
     for ep in config.EPISODES:
         print(f"==> Episode: {ep['title']}")
-        items = fetch_items(ep["feeds"])
-        print(f"    {len(items)} Artikel gesammelt")
-        if not items:
-            print("    keine Artikel – Episode wird heute übersprungen")
-            continue
+        kind = ep.get("kind", "news")
 
-        script = write_script(ep["title"], items, date_str)
-        print(f"    Skript: {len(script.split())} Wörter")
+        if kind == "finance":
+            quotes = fetch_quotes(ep.get("instruments", []))
+            ok_n = sum(1 for q in quotes if q.get("ok"))
+            macro_items = fetch_items(ep.get("feeds", []))
+            print(f"    {ok_n} Kurse, {len(macro_items)} Makro-Artikel")
+            if ok_n == 0 and not macro_items:
+                print("    keine Daten – Episode wird übersprungen")
+                continue
+            prompt = build_finance_prompt(ep, quotes, macro_items, date_str, already_covered)
+        else:
+            items = fetch_items(ep["feeds"])
+            print(f"    {len(items)} Artikel gesammelt")
+            if not items:
+                print("    keine Artikel – Episode wird übersprungen")
+                continue
+            prompt = build_news_prompt(ep, items, date_str, already_covered)
+
+        full = write_script(prompt)
+        script, covered = split_script_and_covered(full)
+        already_covered.extend(covered)
+        print(f"    Skript: {len(script.split())} Wörter, {len(covered)} Themen erfasst")
 
         filename = f"{ep['id']}-{day_tag}.mp3"
         out_path = os.path.join(EPISODES_DIR, filename)
