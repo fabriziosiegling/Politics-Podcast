@@ -1,33 +1,5 @@
 [
   {
-    "title": "Innenpolitik Deutschland – 23.06.2026",
-    "file": "politics-de-2026-06-23.mp3",
-    "description": "Quellengeprüftes Briefing vom 23.06.2026.",
-    "pubdate": "Tue, 23 Jun 2026 23:47:00 +0000",
-    "length": 1202061
-  },
-  {
-    "title": "Weltpolitik – Top Events – 23.06.2026",
-    "file": "world-2026-06-23.mp3",
-    "description": "Quellengeprüftes Briefing vom 23.06.2026.",
-    "pubdate": "Tue, 23 Jun 2026 23:47:00 +0000",
-    "length": 1310157
-  },
-  {
-    "title": "Innenpolitik Deutschland – 24.06.2026",
-    "file": "politics-de-2026-06-24.mp3",
-    "description": "Quellengeprüftes Briefing vom 24.06.2026.",
-    "pubdate": "Wed, 24 Jun 2026 12:08:30 +0000",
-    "length": 1262157
-  },
-  {
-    "title": "Weltpolitik – Top Events – 24.06.2026",
-    "file": "world-2026-06-24.mp3",
-    "description": "Quellengeprüftes Briefing vom 24.06.2026.",
-    "pubdate": "Wed, 24 Jun 2026 12:08:30 +0000",
-    "length": 1318797
-  },
-  {
     "title": "Innenpolitik Deutschland – 25.06.2026",
     "file": "politics-de-2026-06-25.mp3",
     "description": "Quellengeprüftes Briefing vom 25.06.2026.",
@@ -145,5 +117,26 @@
     "description": "Quellengeprüftes Briefing vom 30.06.2026.",
     "pubdate": "Tue, 30 Jun 2026 11:59:55 +0000",
     "length": 1194765
+  },
+  {
+    "title": "Innenpolitik Deutschland – 01.07.2026",
+    "file": "politics-de-2026-07-01.mp3",
+    "description": "Quellengeprüftes Briefing vom 01.07.2026.",
+    "pubdate": "Wed, 01 Jul 2026 12:26:09 +0000",
+    "length": 1172109
+  },
+  {
+    "title": "Weltpolitik – Top Events – 01.07.2026",
+    "file": "world-2026-07-01.mp3",
+    "description": "Quellengeprüftes Briefing vom 01.07.2026.",
+    "pubdate": "Wed, 01 Jul 2026 12:26:09 +0000",
+    "length": 1239405
+  },
+  {
+    "title": "Finance & Markets – 01.07.2026",
+    "file": "finance-2026-07-01.mp3",
+    "description": "Quellengeprüftes Briefing vom 01.07.2026.",
+    "pubdate": "Wed, 01 Jul 2026 12:26:09 +0000",
+    "length": 1258797
   }
 ]
