@@ -1,26 +1,5 @@
 [
   {
-    "title": "Innenpolitik Deutschland – 23.07.2026",
-    "file": "politics-de-2026-07-23.mp3",
-    "description": "Quellengeprüftes Briefing vom 23.07.2026.",
-    "pubdate": "Thu, 23 Jul 2026 10:41:47 +0000",
-    "length": 1120653
-  },
-  {
-    "title": "Weltpolitik – Top Events – 23.07.2026",
-    "file": "world-2026-07-23.mp3",
-    "description": "Quellengeprüftes Briefing vom 23.07.2026.",
-    "pubdate": "Thu, 23 Jul 2026 10:41:47 +0000",
-    "length": 1348653
-  },
-  {
-    "title": "Finance & Markets – 23.07.2026",
-    "file": "finance-2026-07-23.mp3",
-    "description": "Quellengeprüftes Briefing vom 23.07.2026.",
-    "pubdate": "Thu, 23 Jul 2026 10:41:47 +0000",
-    "length": 1146765
-  },
-  {
     "title": "Innenpolitik Deutschland – 24.07.2026",
     "file": "politics-de-2026-07-24.mp3",
     "description": "Quellengeprüftes Briefing vom 24.07.2026.",
@@ -166,5 +145,26 @@
     "description": "Quellengeprüftes Briefing vom 30.07.2026.",
     "pubdate": "Thu, 30 Jul 2026 05:24:28 +0000",
     "length": 1119117
+  },
+  {
+    "title": "Innenpolitik Deutschland – 31.07.2026",
+    "file": "politics-de-2026-07-31.mp3",
+    "description": "Quellengeprüftes Briefing vom 31.07.2026.",
+    "pubdate": "Fri, 31 Jul 2026 05:50:49 +0000",
+    "length": 1199373
+  },
+  {
+    "title": "Weltpolitik – Top Events – 31.07.2026",
+    "file": "world-2026-07-31.mp3",
+    "description": "Quellengeprüftes Briefing vom 31.07.2026.",
+    "pubdate": "Fri, 31 Jul 2026 05:50:49 +0000",
+    "length": 1243917
+  },
+  {
+    "title": "Finance & Markets – 31.07.2026",
+    "file": "finance-2026-07-31.mp3",
+    "description": "Quellengeprüftes Briefing vom 31.07.2026.",
+    "pubdate": "Fri, 31 Jul 2026 05:50:49 +0000",
+    "length": 1261293
   }
 ]

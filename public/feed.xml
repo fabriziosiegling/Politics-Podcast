@@ -8,7 +8,7 @@
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>python-feedgen</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 30 Jul 2026 05:28:46 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 31 Jul 2026 05:54:57 +0000</lastBuildDate>
     <itunes:author>Morning Podcast Bot</itunes:author>
     <itunes:category text="News"/>
     <itunes:image href="https://fabriziosiegling.github.io/Politics-Podcast/public/cover.png"/>
@@ -39,6 +39,30 @@
       <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-07-24.mp3</guid>
       <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-07-24.mp3" length="1098285" type="audio/mpeg"/>
       <pubDate>Fri, 24 Jul 2026 10:33:03 +0000</pubDate>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
+    <item>
+      <title>Finance &amp; Markets – 31.07.2026</title>
+      <description>Quellengeprüftes Briefing vom 31.07.2026.</description>
+      <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/finance-2026-07-31.mp3</guid>
+      <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/finance-2026-07-31.mp3" length="1261293" type="audio/mpeg"/>
+      <pubDate>Fri, 31 Jul 2026 05:50:49 +0000</pubDate>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
+    <item>
+      <title>Weltpolitik – Top Events – 31.07.2026</title>
+      <description>Quellengeprüftes Briefing vom 31.07.2026.</description>
+      <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/world-2026-07-31.mp3</guid>
+      <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/world-2026-07-31.mp3" length="1243917" type="audio/mpeg"/>
+      <pubDate>Fri, 31 Jul 2026 05:50:49 +0000</pubDate>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
+    <item>
+      <title>Innenpolitik Deutschland – 31.07.2026</title>
+      <description>Quellengeprüftes Briefing vom 31.07.2026.</description>
+      <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-07-31.mp3</guid>
+      <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-07-31.mp3" length="1199373" type="audio/mpeg"/>
+      <pubDate>Fri, 31 Jul 2026 05:50:49 +0000</pubDate>
       <itunes:explicit>no</itunes:explicit>
     </item>
     <item>
@@ -111,30 +135,6 @@
       <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-07-26.mp3</guid>
       <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-07-26.mp3" length="1057101" type="audio/mpeg"/>
       <pubDate>Sun, 26 Jul 2026 05:46:02 +0000</pubDate>
-      <itunes:explicit>no</itunes:explicit>
-    </item>
-    <item>
-      <title>Finance &amp; Markets – 23.07.2026</title>
-      <description>Quellengeprüftes Briefing vom 23.07.2026.</description>
-      <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/finance-2026-07-23.mp3</guid>
-      <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/finance-2026-07-23.mp3" length="1146765" type="audio/mpeg"/>
-      <pubDate>Thu, 23 Jul 2026 10:41:47 +0000</pubDate>
-      <itunes:explicit>no</itunes:explicit>
-    </item>
-    <item>
-      <title>Weltpolitik – Top Events – 23.07.2026</title>
-      <description>Quellengeprüftes Briefing vom 23.07.2026.</description>
-      <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/world-2026-07-23.mp3</guid>
-      <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/world-2026-07-23.mp3" length="1348653" type="audio/mpeg"/>
-      <pubDate>Thu, 23 Jul 2026 10:41:47 +0000</pubDate>
-      <itunes:explicit>no</itunes:explicit>
-    </item>
-    <item>
-      <title>Innenpolitik Deutschland – 23.07.2026</title>
-      <description>Quellengeprüftes Briefing vom 23.07.2026.</description>
-      <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-07-23.mp3</guid>
-      <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-07-23.mp3" length="1120653" type="audio/mpeg"/>
-      <pubDate>Thu, 23 Jul 2026 10:41:47 +0000</pubDate>
       <itunes:explicit>no</itunes:explicit>
     </item>
     <item>
