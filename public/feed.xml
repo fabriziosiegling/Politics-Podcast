@@ -8,7 +8,7 @@
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>python-feedgen</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 06 Aug 2026 05:37:44 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 07 Aug 2026 04:41:38 +0000</lastBuildDate>
     <itunes:author>Morning Podcast Bot</itunes:author>
     <itunes:category text="News"/>
     <itunes:image href="https://fabriziosiegling.github.io/Politics-Podcast/public/cover.png"/>
@@ -17,6 +17,30 @@
       <itunes:name>Morning Podcast Bot</itunes:name>
       <itunes:email>ibaf005@gmail.com</itunes:email>
     </itunes:owner>
+    <item>
+      <title>Finance &amp; Markets – 07.08.2026</title>
+      <description>Quellengeprüftes Briefing vom 07.08.2026.</description>
+      <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/finance-2026-08-07.mp3</guid>
+      <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/finance-2026-08-07.mp3" length="1214829" type="audio/mpeg"/>
+      <pubDate>Fri, 07 Aug 2026 04:37:06 +0000</pubDate>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
+    <item>
+      <title>Weltpolitik – Top Events – 07.08.2026</title>
+      <description>Quellengeprüftes Briefing vom 07.08.2026.</description>
+      <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/world-2026-08-07.mp3</guid>
+      <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/world-2026-08-07.mp3" length="1547757" type="audio/mpeg"/>
+      <pubDate>Fri, 07 Aug 2026 04:37:06 +0000</pubDate>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
+    <item>
+      <title>Innenpolitik Deutschland – 07.08.2026</title>
+      <description>Quellengeprüftes Briefing vom 07.08.2026.</description>
+      <guid isPermaLink="false">https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-08-07.mp3</guid>
+      <enclosure url="https://fabriziosiegling.github.io/Politics-Podcast/public/episodes/politics-de-2026-08-07.mp3" length="1142157" type="audio/mpeg"/>
+      <pubDate>Fri, 07 Aug 2026 04:37:06 +0000</pubDate>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
     <item>
       <title>Finance &amp; Markets – 31.07.2026</title>
       <description>Quellengeprüftes Briefing vom 31.07.2026.</description>
